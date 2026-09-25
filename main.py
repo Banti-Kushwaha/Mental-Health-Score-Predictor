@@ -1,3 +1,4 @@
+import os
 import joblib
 import pandas as pd
 from fastapi import FastAPI
@@ -7,7 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-model = joblib.load('Mental_Health_Model.pkl')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+model = joblib.load(os.path.join(BASE_DIR, 'Mental_Health_Model.pkl'))
+
 top_countries = ['Other','India','USA','Canada','Australia','UK','Germany','Mexico','Turkey','France']
 
 app = FastAPI()
@@ -49,7 +53,7 @@ app.mount("/static", StaticFiles(directory="."), name="static")
 
 @app.get("/")
 def home():
-    return FileResponse("index.html")
+    return FileResponse(os.path.join(BASE_DIR, "index.html"))
 
 
 @app.post('/predict', response_model=PredictionResponse) #6.77777
